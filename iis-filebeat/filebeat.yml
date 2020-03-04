@@ -1,0 +1,24 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+  - C:\inetpub\logs\LogFiles\*\*.log
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+setup.dashboards.enabled: true
+setup.kibana:
+  host: "elk-server:5601"
+  username: "elastic"
+  password: "elastic"
+output.logstash:
+  hosts: ["elk-server:5044"]
+processors:
+- drop_event:
+    when:
+      regexp:
+        message: "^#"
+- add_fields:
+    target: ''
+    fields:
+      http.provider: iis
+      http.log.type: access
